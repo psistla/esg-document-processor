@@ -27,9 +27,17 @@ pip install -r requirements.txt
 {
   "IsEncrypted": false,
   "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "python",
-    "DOCUMENT_INTELLIGENCE_ENDPOINT": "your-endpoint",
-    "DOCUMENT_INTELLIGENCE_KEY": "your-key"
+    "DOCUMENT_INTELLIGENCE_ENDPOINT": "https://your-doc-intelligence-resource.cognitiveservices.azure.com/",
+    "DOCUMENT_INTELLIGENCE_KEY": "your-document-intelligence-key-here",
+    "PYTHON_ISOLATE_WORKER_DEPENDENCIES": "1"
+  },
+  "ConnectionStrings": {},
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*",
+    "CORSCredentials": false
   }
 }
 ```
