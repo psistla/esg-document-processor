@@ -1,0 +1,23 @@
+# Azure Functions Runtime
+azure-functions
+
+# Azure Document Intelligence - Latest GA version
+azure-ai-documentintelligence
+
+# Azure Storage Blob
+azure-storage-blob
+
+# Azure Core dependencies
+azure-core
+azure-identity
+
+# Additional utilities
+requests
+python-dateutil
+
+# Optional: For enhanced data processing
+pandas
+openpyxl
+
+# Logging enhancements
+structlog

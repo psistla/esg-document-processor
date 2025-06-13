@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+
+# Azure Functions
+local.settings.json
+.python_packages/
+
+# VS Code
+.vscode/
+
+# Local development
+.env
+```
+
+3. **Initialize and Push to GitHub:**
+```powershell
+# Add files
+git add .
+
+# Initial commit
+git commit -m "Initial commit: ESG Document Processor"
+
+# Create new repository on GitHub.com first, then:
+git remote add origin https://github.com/YOUR_USERNAME/esg-document-processor.git
+git branch -M main
+git push -u origin main
+```
+
+## 2. Deploy to Azure
+
+1. **Install Azure CLI and Azure Functions Core Tools:**
+```powershell
+# Install Azure CLI
+winget install Microsoft.AzureCLI
+
+# Install Azure Functions Core Tools
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
+```
+
+2. **Create Azure Resources:**
+```powershell
+# Login to Azure
+az login
+
+# Create Resource Group
+az group create --name esg-processor-rg --location eastus
+
+# Create Storage Account
+az storage account create --name esgprocessorstorage --location eastus --resource-group esg-processor-rg --sku Standard_LRS
+
+# Create Function App
+az functionapp create --resource-group esg-processor-rg --consumption-plan-location eastus --runtime python --runtime-version 3.9 --functions-version 4 --name esg-processor-func --storage-account esgprocessorstorage --os-type linux
+```
+
+3. **Create deployment settings file:**
+````yaml
+// filepath: c:\Users\prasa\OneDrive\Desktop\esg-document-processor\.github\workflows\azure-deploy.yml
+name: Deploy to Azure Functions
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AZURE_FUNCTIONAPP_NAME: esg-processor-func
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Deploy to Azure Functions
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
